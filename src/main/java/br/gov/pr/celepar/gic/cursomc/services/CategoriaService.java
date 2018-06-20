@@ -19,4 +19,9 @@ public class CategoriaService {
 		
 		return categoria.orElse(null);
 	}
+	
+	public void cadastrar(Categoria categoria) {
+		repo.save(categoria);
+		
+	}
 }
