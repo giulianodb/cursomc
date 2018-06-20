@@ -1,16 +1,26 @@
 package br.gov.pr.celepar.gic.cursomc.resources;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import br.gov.pr.celepar.gic.cursomc.domain.Categoria;
+import br.gov.pr.celepar.gic.cursomc.services.CategoriaService;
 
 @RestController
 @RequestMapping(value="/categorias")
 public class CategoriaResource {
 	
-	@RequestMapping(method=RequestMethod.GET)
-	public String listar() {
+	@Autowired
+	private CategoriaService categoriaService;
+	
+	@RequestMapping(value="/{id}", method=RequestMethod.GET)
+	public ResponseEntity<?> find(@PathVariable Integer id) {
+		Categoria categoria = categoriaService.buscar(id);
 		
-		return "REST OK";
+		return ResponseEntity.ok(categoria);
 	}
 }
