@@ -1,5 +1,6 @@
 package br.gov.pr.celepar.gic.cursomc;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +13,22 @@ import br.gov.pr.celepar.gic.cursomc.domain.Cidade;
 import br.gov.pr.celepar.gic.cursomc.domain.Cliente;
 import br.gov.pr.celepar.gic.cursomc.domain.Endereco;
 import br.gov.pr.celepar.gic.cursomc.domain.Estado;
+import br.gov.pr.celepar.gic.cursomc.domain.ItemPedido;
+import br.gov.pr.celepar.gic.cursomc.domain.Pagamento;
+import br.gov.pr.celepar.gic.cursomc.domain.PagamentoComBoleto;
+import br.gov.pr.celepar.gic.cursomc.domain.PagamentoComCartao;
+import br.gov.pr.celepar.gic.cursomc.domain.Pedido;
 import br.gov.pr.celepar.gic.cursomc.domain.Produto;
+import br.gov.pr.celepar.gic.cursomc.domain.enums.EstadoPagamento;
 import br.gov.pr.celepar.gic.cursomc.domain.enums.TipoCliente;
 import br.gov.pr.celepar.gic.cursomc.repositories.CategoriaRepository;
 import br.gov.pr.celepar.gic.cursomc.repositories.CidadeRepository;
 import br.gov.pr.celepar.gic.cursomc.repositories.ClienteRepository;
 import br.gov.pr.celepar.gic.cursomc.repositories.EnderecoRepository;
 import br.gov.pr.celepar.gic.cursomc.repositories.EstadoRepository;
+import br.gov.pr.celepar.gic.cursomc.repositories.ItemPedidoRepository;
+import br.gov.pr.celepar.gic.cursomc.repositories.PagamentoRepository;
+import br.gov.pr.celepar.gic.cursomc.repositories.PedidoRepository;
 import br.gov.pr.celepar.gic.cursomc.repositories.ProdutoRepository;
 import br.gov.pr.celepar.gic.cursomc.services.CategoriaService;
 
@@ -42,8 +52,19 @@ public class CursomcApplication implements CommandLineRunner{
 	
 	@Autowired
 	private ClienteRepository clienteRepository;
+	
 	@Autowired
 	private ProdutoRepository produtoRepository;
+	
+	@Autowired
+	private PedidoRepository pedidoRepository;
+	
+	@Autowired
+	private PagamentoRepository pagamentoRepository;
+	
+	@Autowired
+	private ItemPedidoRepository itemPedidoRepository;
+	
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
 	}
@@ -98,7 +119,36 @@ public class CursomcApplication implements CommandLineRunner{
 		clienteRepository.saveAll(Arrays.asList(cli1));
 		enderecoRepository.saveAll(Arrays.asList(end1,end2));
 		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		
+		Pedido pedi1 = new Pedido(null, sdf.parse("30/09/2017 10:32"), cli1, end1);
+		Pedido pedi2 = new Pedido(null, sdf.parse("10/10/2017 12:32"), cli1, end2);
+		
+		
+		Pagamento pagto1 = new PagamentoComCartao(null,EstadoPagamento.QUITADO,pedi1,6);
+		pedi1.setPagamento(pagto1);
+		
+		Pagamento pagto2 = new PagamentoComBoleto( null,EstadoPagamento.PENDENTE,pedi2,sdf.parse("20/10/2017 00:00"), null);
+		pedi2.setPagamento(pagto2);
+		
+		cli1.getPedidos().addAll(Arrays.asList(pedi1,pedi2));
+		
+		pedidoRepository.saveAll(Arrays.asList(pedi1,pedi2));
+		pagamentoRepository.saveAll(Arrays.asList(pagto1,pagto2));
+		
+		
+		ItemPedido ip1 = new ItemPedido(pedi1, p1, 0.0, 1, 2000.0);
+		ItemPedido ip2 = new ItemPedido(pedi1, p3, 0.0, 2, 80.0);
+		ItemPedido ip3 = new ItemPedido(pedi2, p2, 100.0, 1, 800.0);
+		
+		pedi1.getItens().addAll(Arrays.asList(ip1,ip2));
+		pedi2.getItens().addAll(Arrays.asList(ip3));
+		
+		p1.getItens().addAll(Arrays.asList(ip1));
+		p2.getItens().addAll(Arrays.asList(ip3));
+		p3.getItens().addAll(Arrays.asList(ip2));
+		
+		itemPedidoRepository.saveAll(Arrays.asList(ip1,ip3,ip3));
 		// 
 		
 	}
