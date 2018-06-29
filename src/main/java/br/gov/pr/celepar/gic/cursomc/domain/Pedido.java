@@ -15,6 +15,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @Entity
 public class Pedido implements Serializable{
 
@@ -24,12 +26,16 @@ public class Pedido implements Serializable{
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	
-	private Date data;
+	@JsonFormat(pattern="dd/MM/yyyy HH:mm")
+	private Date instante;
 	
+	//@JsonManagedReference as tagas são para gerenciar atributos ciclicos porem apresentou problemas
 	@OneToOne(cascade=CascadeType.ALL,mappedBy="pedido")
 	private Pagamento pagamento;
 	
+	//@JsonManagedReference as tagas são para gerenciar atributos ciclicos porem apresentou problemas
 	@ManyToOne
+	@JoinColumn(name="cliente_id")
 	private Cliente cliente;
 	
 	@ManyToOne
@@ -39,22 +45,22 @@ public class Pedido implements Serializable{
 	@OneToMany(mappedBy="id.pedido")
 	private Set<ItemPedido> itens = new HashSet<>();
 	
-	public Date getData() {
-		return data;
+	public Date getInstante() {
+		return instante;
 	}
 
-	public void setData(Date data) {
-		this.data = data;
+	public void setInstante(Date instante) {
+		this.instante = instante;
 	}
 
 	public Pedido() {
 	
 	} 
 
-	public Pedido(Integer id, Date data, Cliente cliente, Endereco enderecoDeEntrega) {
+	public Pedido(Integer id, Date instante, Cliente cliente, Endereco enderecoDeEntrega) {
 		super();
 		this.id = id;
-		this.data = data;
+		this.instante = instante;
 		this.cliente = cliente;
 		this.enderecoDeEntrega = enderecoDeEntrega;
 	}
