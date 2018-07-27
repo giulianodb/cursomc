@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -35,7 +36,7 @@ public class Cliente implements Serializable{
 	private Integer tipo;
 	
 	//@JsonManagedReference as tagas são para gerenciar atributos ciclicos porem apresentou problemas
-	@OneToMany(mappedBy="cliente")
+	@OneToMany(mappedBy="cliente",cascade=CascadeType.ALL)
 	private List<Endereco> enderecos = new ArrayList<>();
 	
 	@JsonIgnore
