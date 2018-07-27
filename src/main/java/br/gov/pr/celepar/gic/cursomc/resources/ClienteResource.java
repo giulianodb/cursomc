@@ -19,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.gov.pr.celepar.gic.cursomc.domain.Cliente;
 import br.gov.pr.celepar.gic.cursomc.dto.ClienteDTO;
+import br.gov.pr.celepar.gic.cursomc.dto.ClienteNewDTO;
 import br.gov.pr.celepar.gic.cursomc.services.ClienteService;
 
 @RestController
@@ -47,8 +48,8 @@ public class ClienteResource {
 	}
 	
 	@RequestMapping(method=RequestMethod.POST)
-	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteDTO clienteDTO){
-		Cliente cliente = clienteService.insert(clienteService.fromDTO(clienteDTO));
+	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO clienteNewDTO){
+		Cliente cliente = clienteService.insert(clienteService.fromDTO(clienteNewDTO));
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().
 				path("/{id}").buildAndExpand(cliente.getId()).toUri();
 		
