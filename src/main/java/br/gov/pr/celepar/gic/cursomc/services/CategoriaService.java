@@ -11,6 +11,8 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import br.gov.pr.celepar.gic.cursomc.domain.Categoria;
+import br.gov.pr.celepar.gic.cursomc.domain.Categoria;
+import br.gov.pr.celepar.gic.cursomc.dto.CategoriaDTO;
 import br.gov.pr.celepar.gic.cursomc.repositories.CategoriaRepository;
 import br.gov.pr.celepar.gic.cursomc.services.exceptions.DataIntegrityException;
 import br.gov.pr.celepar.gic.cursomc.services.exceptions.ObjectNotFoundException;
@@ -47,9 +49,10 @@ public class CategoriaService {
 		return categoria;
 	}
 
-	public Categoria update(Categoria categoria) {
-		find(categoria.getId());
-		return repo.save(categoria);
+	public Categoria update(Categoria categoriaAlterado) {
+		Categoria categoriaBanco = find(categoriaAlterado.getId());
+		updateData(categoriaBanco,categoriaAlterado);
+		return repo.save(categoriaBanco);
 	}
 	
 	public void delete(Integer idCategoria) {
@@ -74,4 +77,13 @@ public class CategoriaService {
 		
 		return repo.findAll(pageRequest);
 	}
+	
+	public Categoria fromDTO(CategoriaDTO categoriaDTO) {
+		return new Categoria(categoriaDTO.getId(),categoriaDTO.getNome());
+	}
+	
+	private void updateData(Categoria categoriaBanco, Categoria categoriaAnterado) {
+		categoriaBanco.setNome(categoriaAnterado.getNome());
+	}
+
 }
