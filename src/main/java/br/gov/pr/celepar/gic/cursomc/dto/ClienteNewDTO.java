@@ -2,28 +2,45 @@ package br.gov.pr.celepar.gic.cursomc.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+
+import org.hibernate.validator.constraints.Length;
+
+import br.gov.pr.celepar.gic.cursomc.services.validation.ClienteInsert;
+
 /**
  * DTO para cadastrar novo cliente
  * @author giulianodb
  *
  */
+@ClienteInsert
 public class ClienteNewDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
+	@NotEmpty(message="Preenchimento obrigatório")
+	@Length(min=5, max=80,message="O tamanho deve ser entre 5 e 80")
 	private String nome;
-	
+
+	@Email(message="Preenchimento obrigatório")
+	@NotEmpty(message="Email inválido")
 	private String email;
+
+	@NotEmpty(message="Campo obrigatório")
 	private String cpfOuCnpj;
 	private Integer tipo;
 	
+	@NotEmpty(message="Campo obrigatório")
 	private String logradouro;
 	
+	@NotEmpty(message="Campo obrigatório")
 	private String numero;
 	
 	private String complemento;
 	private String bairro;
+	@NotEmpty(message="Campo obrigatório")
 	private String cep;
-	
+	@NotEmpty(message="Campo obrigatório")
 	private String telefone1;
 	private String telefone2;
 	private String telefone3;
