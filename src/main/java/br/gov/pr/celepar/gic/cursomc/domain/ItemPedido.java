@@ -1,6 +1,8 @@
 package br.gov.pr.celepar.gic.cursomc.domain;
 
 import java.io.Serializable;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -112,4 +114,30 @@ public class ItemPedido implements Serializable{
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		
+		builder.append(getProduto().getNome());
+		builder.append(", Qtde: ");
+		builder.append(getQuantidade());
+		
+		builder.append(", Preço unitário: ");
+		
+		NumberFormat bf = NumberFormat.getCurrencyInstance(new Locale("pt","BR"));
+		
+		builder.append(bf.format(getPreco()));
+		
+		builder.append(", Subtotal: ");
+		builder.append(bf.format(getSubTotal()));
+		
+		builder.append("\n");
+		
+		
+		
+		return builder.toString();
+	}
+	
+	
 }
