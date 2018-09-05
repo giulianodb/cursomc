@@ -38,6 +38,9 @@ public class PedidoService {
 	
 	@Autowired
 	private ClienteService clienteService;
+	
+	@Autowired
+	private EmailService emailService;
 
 	public Pedido buscar(Integer id) {
 		
@@ -85,7 +88,8 @@ public class PedidoService {
 		
 		itemPedidoRepository.saveAll(pedido.getItens());
 		
-		System.out.println(pedido);
+		emailService.sendOrderConfirmationEmail(pedido);
+		
 		return pedido;
 		
 	}
