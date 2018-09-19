@@ -20,6 +20,7 @@ import br.gov.pr.celepar.gic.cursomc.domain.PagamentoComCartao;
 import br.gov.pr.celepar.gic.cursomc.domain.Pedido;
 import br.gov.pr.celepar.gic.cursomc.domain.Produto;
 import br.gov.pr.celepar.gic.cursomc.domain.enums.EstadoPagamento;
+import br.gov.pr.celepar.gic.cursomc.domain.enums.Perfil;
 import br.gov.pr.celepar.gic.cursomc.domain.enums.TipoCliente;
 import br.gov.pr.celepar.gic.cursomc.repositories.CategoriaRepository;
 import br.gov.pr.celepar.gic.cursomc.repositories.CidadeRepository;
@@ -139,17 +140,22 @@ public class DBService {
 		cidadeRepository.saveAll(Arrays.asList(cid1,cid2,cid3));
 		
 		
-		Cliente cli1 = new Cliente(null,"Maria Silva","giulianodb@celepar.pr.gov.br","14984781238",TipoCliente.PESSOAFISICA,pe.encode("123"));
+		Cliente cli1 = new Cliente(null,"Maria Silva","giulianodb@gmail.com","14984781238",TipoCliente.PESSOAFISICA,pe.encode("123"));
 		cli1.getTelefones().addAll(Arrays.asList("54465","5646"));
 		
+		Cliente cli2 = new Cliente(null,"Ana Almeida","giulianodb@celepar.pr.gov.br","88611318323",TipoCliente.PESSOAFISICA,pe.encode("123"));
+		cli2.addPerfil(Perfil.ADMIN);
+		cli2.getTelefones().addAll(Arrays.asList("458887","58421"));
 		
 		Endereco end1 = new Endereco(null,"Rua flores","500","Apt 3", "jaridm","545",cli1,cid1);
 		Endereco end2 = new Endereco(null,"Avenida mat os","34","sala 33", "centro","3565464",cli1,cid2);
+		Endereco end3 = new Endereco(null,"Avenida Floriano","877",null, "Jardim","sssdds",cli2,cid2);
 		
 		cli1.getEnderecos().addAll(Arrays.asList(end1,end2));
+		cli2.getEnderecos().addAll(Arrays.asList(end3));
 		
-		clienteRepository.saveAll(Arrays.asList(cli1));
-		enderecoRepository.saveAll(Arrays.asList(end1,end2));
+		clienteRepository.saveAll(Arrays.asList(cli1,cli2));
+		enderecoRepository.saveAll(Arrays.asList(end1,end2,end3));
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		
