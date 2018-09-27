@@ -15,12 +15,15 @@ import org.springframework.transaction.annotation.Transactional;
 import br.gov.pr.celepar.gic.cursomc.domain.Cidade;
 import br.gov.pr.celepar.gic.cursomc.domain.Cliente;
 import br.gov.pr.celepar.gic.cursomc.domain.Endereco;
+import br.gov.pr.celepar.gic.cursomc.domain.enums.Perfil;
 import br.gov.pr.celepar.gic.cursomc.domain.enums.TipoCliente;
 import br.gov.pr.celepar.gic.cursomc.dto.ClienteDTO;
 import br.gov.pr.celepar.gic.cursomc.dto.ClienteNewDTO;
 import br.gov.pr.celepar.gic.cursomc.repositories.CidadeRepository;
 import br.gov.pr.celepar.gic.cursomc.repositories.ClienteRepository;
 import br.gov.pr.celepar.gic.cursomc.repositories.EnderecoRepository;
+import br.gov.pr.celepar.gic.cursomc.security.UserSS;
+import br.gov.pr.celepar.gic.cursomc.services.exceptions.AuthorizationException;
 import br.gov.pr.celepar.gic.cursomc.services.exceptions.DataIntegrityException;
 import br.gov.pr.celepar.gic.cursomc.services.exceptions.ObjectNotFoundException;
 
@@ -41,6 +44,13 @@ public class ClienteService {
 	
 	
 	public Cliente buscar(Integer id) {
+		
+		UserSS user = UserService.authenticated();
+		
+		if (user == null || !user.hasHole(Perfil.ADMIN) && !user.getId().equals(id)) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		
 		Optional<Cliente> cliente = repo.findById(id);
 		return cliente.orElseThrow(() -> new ObjectNotFoundException(
 		"Objeto não encontrado! Id: " + id + ", Tipo: " + Cliente.class.getName()));
@@ -48,6 +58,13 @@ public class ClienteService {
 	}
 	
 	public Cliente find(Integer id) {
+		
+		UserSS user = UserService.authenticated();
+		
+		if (user == null || !user.hasHole(Perfil.ADMIN) && !user.getId().equals(id)) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		
 		Optional<Cliente> cliente = repo.findById(id);
 		return cliente.orElseThrow(() -> new ObjectNotFoundException(
 		"Objeto não encontrado! Id: " + id + ", Tipo: " + Cliente.class.getName()));
