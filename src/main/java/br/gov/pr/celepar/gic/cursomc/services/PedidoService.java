@@ -4,8 +4,13 @@ import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import br.gov.pr.celepar.gic.cursomc.domain.Categoria;
+import br.gov.pr.celepar.gic.cursomc.domain.Cliente;
 import br.gov.pr.celepar.gic.cursomc.domain.ItemPedido;
 import br.gov.pr.celepar.gic.cursomc.domain.Pagamento;
 import br.gov.pr.celepar.gic.cursomc.domain.PagamentoComBoleto;
@@ -16,6 +21,8 @@ import br.gov.pr.celepar.gic.cursomc.dto.PedidoDTO;
 import br.gov.pr.celepar.gic.cursomc.repositories.ItemPedidoRepository;
 import br.gov.pr.celepar.gic.cursomc.repositories.PagamentoRepository;
 import br.gov.pr.celepar.gic.cursomc.repositories.PedidoRepository;
+import br.gov.pr.celepar.gic.cursomc.security.UserSS;
+import br.gov.pr.celepar.gic.cursomc.services.exceptions.AuthorizationException;
 import br.gov.pr.celepar.gic.cursomc.services.exceptions.ObjectNotFoundException;
 
 @Service
@@ -93,6 +100,20 @@ public class PedidoService {
 		return pedido;
 		
 	}
+	
+	public Page<Pedido> findPage(Integer page,Integer linesPerPage, String orderBy, String direction) {
+		UserSS user = UserService.authenticated();
+		
+		if (user == null) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		
+		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
+		Cliente cliente = clienteService.find(user.getId());
+		
+		return repo.findByCliente(cliente, pageRequest);
+	}
+	
 	
 	public Pedido fromDTO(PedidoDTO pedidoDTO) {
 		return new Pedido();
