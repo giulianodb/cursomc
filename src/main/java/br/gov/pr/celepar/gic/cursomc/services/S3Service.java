@@ -11,11 +11,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.amazonaws.AmazonClientException;
-import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+
+import br.gov.pr.celepar.gic.cursomc.services.exceptions.FileException;
 
 @Service
 public class S3Service {
@@ -45,9 +45,10 @@ public class S3Service {
 		}  catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
+			throw new FileException("Erro de IO: "+e.getMessage());
 		}
 		
-		return null;
 	}
 	
 	public URI uploadFile(InputStream is, String fileName, String contentType) {
@@ -60,18 +61,9 @@ public class S3Service {
 			
 			return s3Client.getUrl(bucketName, fileName).toURI();
 		}
-		catch (AmazonServiceException e) {
-			LOG.info("AmazonServiceException: " + e.getErrorMessage());
-			LOG.info("Status code: " + e.getErrorCode());
+		catch (URISyntaxException e) {
+			throw new FileException("Erro de IO: "+e.getMessage());
 		}
-		catch (AmazonClientException e) {
-			LOG.info("AmazonClienteException: " + e.getMessage());
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return null;
 	}
 	
 }
